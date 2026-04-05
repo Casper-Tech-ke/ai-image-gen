@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}{{ endpoint }} — AI Imager API{% endblock %}
+
+{% block body %}
+<div class="jp-wrap">
+
+  <!-- Top brand bar -->
+  <div class="jp-brand-bar">
+    <div class="jp-brand-bar-inner">
+      <div class="jp-brand-left">
+        <a href="/" class="jp-brand-logo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" stroke="url(#g1)" stroke-width="1.8"/><path d="M8 8h8M8 12h5M8 16h6" stroke="url(#g1)" stroke-width="1.8" stroke-linecap="round"/><defs><linearGradient id="g1" x1="3" y1="3" x2="21" y2="21"><stop stop-color="#7c3aed"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs></svg>
+          <span class="jp-brand-name">AI Imager</span>
+        </a>
+        <span class="jp-brand-sep">·</span>
+        <span class="jp-brand-sub">API Response</span>
+      </div>
+      <div class="jp-brand-right">
+        <span class="jp-powered">Powered by</span>
+        <a href="https://apis.xcasper.space" target="_blank" class="jp-casper-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#a78bfa" stroke-width="1.8"/><path d="M9 9l6 6M15 9l-6 6" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round"/></svg>
+          CASPER TECH APIs
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Request line -->
+  <div class="jp-request-line">
+    <span class="jp-method {% if status < 400 %}jp-method-get{% else %}jp-method-err{% endif %}">GET</span>
+    <code class="jp-path">{{ endpoint }}</code>
+    <span class="jp-qs">{{ request.query_string.decode() }}</span>
+    <div class="jp-spacer"></div>
+    {% if status < 400 %}
+      <span class="jp-status jp-s-ok">{{ status }} OK</span>
+    {% else %}
+      <span class="jp-status jp-s-err">{{ status }} Error</span>
+    {% endif %}
+  </div>
+
+  <!-- Toolbar -->
+  <div class="jp-toolbar">
+    <div class="jp-toolbar-left">
+      <span class="jp-ct-badge">application/json</span>
+    </div>
+    <div class="jp-toolbar-right">
+      <a href="/docs#ep-history" class="jp-tool-btn">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        API Docs
+      </a>
+      <button class="jp-tool-btn" id="jpCopyBtn" onclick="jpCopy()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3 11V3a1 1 0 0 1 1-1h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        Copy
+      </button>
+    </div>
+  </div>
+
+  <!-- JSON Viewer -->
+  <div class="jp-viewer">
+    <pre class="jp-code" id="jpCode">{{ json_text }}</pre>
+  </div>
+
+  <!-- Footer note -->
+  <div class="jp-footer-note">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7v4M8 5.5v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    This response is rendered for readability. API clients receive raw JSON. &nbsp;<a href="/docs">View full API reference →</a>
+  </div>
+
+</div>
+
+<script>
+(function colorize() {
+  const pre = document.getElementById('jpCode');
+  if (!pre) return;
+  const esc = pre.textContent
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  pre.innerHTML = esc.replace(
+    /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
+    function(m) {
+      if (/^"/.test(m)) {
+        if (/:$/.test(m)) return '<span class="jc-key">' + m + '</span>';
+        const inner = m.slice(1, -1);
+        if (/^https?:\/\//.test(inner)) {
+          return '<span class="jc-str">&quot;<a class="jc-link" href="' + inner + '" target="_blank">' + inner + '</a>&quot;</span>';
+        }
+        return '<span class="jc-str">' + m + '</span>';
+      }
+      if (/true|false/.test(m)) return '<span class="jc-bool">' + m + '</span>';
+      if (/null/.test(m))       return '<span class="jc-null">' + m + '</span>';
+      return '<span class="jc-num">' + m + '</span>';
+    }
+  );
+})();
+
+function jpCopy() {
+  const btn = document.getElementById('jpCopyBtn');
+  navigator.clipboard.writeText(document.getElementById('jpCode').textContent).then(() => {
+    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';
+    setTimeout(() => {
+      btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3 11V3a1 1 0 0 1 1-1h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg> Copy';
+    }, 2000);
+  });
+}
+</script>
+{% endblock %}
