@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}AI Imager{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='image/favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- Mobile overlay nav -->
+<div class="mobile-overlay" id="mobileOverlay">
+  <span class="mobile-close" onclick="closeMobileNav()">&times;</span>
+  <a href="/" onclick="closeMobileNav()">Home</a>
+  <a href="/v1/image/prompt" onclick="closeMobileNav()">Text to Image</a>
+  <a href="/v1/image/bing" onclick="closeMobileNav()">Magic Studio</a>
+  <a href="/v1/image/mask" onclick="closeMobileNav()">Image + Mask</a>
+  <a href="/v1/image/variation" onclick="closeMobileNav()">Variations</a>
+  <a href="/v1/image/analyze" onclick="closeMobileNav()">Image to Prompt</a>
+  <a href="/docs" onclick="closeMobileNav()">API Docs</a>
+</div>
+
+<!-- Navbar -->
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="{{ url_for('static', filename='image/favicon.svg') }}" alt="AI Imager">
+    AI Imager
+  </a>
+  <div class="nav-links">
+    <a href="/v1/image/prompt">Text to Image</a>
+    <a href="/v1/image/bing">Magic Studio</a>
+    <a href="/v1/image/mask">Image + Mask</a>
+    <a href="/v1/image/variation">Variations</a>
+    <a href="/v1/image/analyze">Image to Prompt</a>
+    <a href="/docs">API Docs</a>
+  </div>
+  <div class="hamburger" onclick="openMobileNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<main>
+  {% block body %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-grid">
+
+    <!-- Brand column -->
+    <div class="footer-brand">
+      <a href="/" class="footer-logo">
+        <img src="{{ url_for('static', filename='image/favicon.svg') }}" alt="AI Imager" width="28" height="28">
+        <span>AI Imager</span>
+      </a>
+      <p class="footer-tagline">Free, open-source AI image generation powered by Casper Tech APIs. No sign-up. No API key required.</p>
+      <div class="footer-socials">
+        <!-- GitHub -->
+        <a href="https://github.com/xcasper/ai-imager" target="_blank" rel="noopener" class="social-link" aria-label="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        </a>
+        <!-- Homepage -->
+        <a href="https://xcasper.space" target="_blank" rel="noopener" class="social-link" aria-label="Homepage">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </a>
+        <!-- APIs / Project -->
+        <a href="https://apis.xcasper.space" target="_blank" rel="noopener" class="social-link" aria-label="Casper Tech APIs">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l3 3-3 3M13 15h3"/><rect x="2" y="3" width="20" height="18" rx="3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Tools column -->
+    <div class="footer-col">
+      <h4 class="footer-col-title">Tools</h4>
+      <ul>
+        <li><a href="/v1/image/prompt">Text to Image</a></li>
+        <li><a href="/v1/image/bing">Magic Studio</a></li>
+        <li><a href="/v1/image/mask">Image + Mask</a></li>
+        <li><a href="/v1/image/variation">Variations</a></li>
+        <li><a href="/v1/image/analyze">Image to Prompt</a></li>
+        <li><a href="/v1/history">Generation History</a></li>
+      </ul>
+    </div>
+
+    <!-- Resources column -->
+    <div class="footer-col">
+      <h4 class="footer-col-title">Resources</h4>
+      <ul>
+        <li><a href="/docs">API Reference</a></li>
+        <li><a href="https://apis.xcasper.space" target="_blank" rel="noopener">Casper Tech APIs</a></li>
+        <li><a href="https://github.com/xcasper/ai-imager" target="_blank" rel="noopener">GitHub Repo</a></li>
+        <li><a href="https://github.com/xcasper/ai-imager/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a></li>
+        <li><a href="https://github.com/xcasper/ai-imager/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></li>
+      </ul>
+    </div>
+
+    <!-- Legal column -->
+    <div class="footer-col">
+      <h4 class="footer-col-title">Legal</h4>
+      <ul>
+        <li><a href="/terms">Terms of Service</a></li>
+        <li><a href="/privacy">Privacy Policy</a></li>
+        <li><a href="/disclaimer">Disclaimer</a></li>
+        <li><a href="https://github.com/xcasper/ai-imager/blob/main/LICENSE" target="_blank" rel="noopener">License (GPL v3)</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <span class="footer-copy">&copy; <script>document.write(new Date().getFullYear())</script> AI Imager &nbsp;&middot;&nbsp; Built with <a href="https://apis.xcasper.space" target="_blank" rel="noopener">Casper Tech APIs</a></span>
+      <div class="footer-bottom-links">
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/disclaimer">Disclaimer</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='javascript/script.js') }}"></script>
+</body>
+</html>
