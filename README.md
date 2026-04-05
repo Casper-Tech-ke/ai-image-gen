@@ -1,9 +1,9 @@
-<h1 align="center">AI Imager</h1>
+<h1 align="center">AI Image Gen</h1>
 
 <p align="center">
-  <img width="80" height="80" src="https://github.com/xcasper/ai-imager/raw/main/contents/static/image/favicon.svg" alt="AI Imager Logo"/>
+  <img width="80" height="80" src="https://github.com/Casper-Tech-ke/ai-image-gen/raw/main/contents/static/image/favicon.svg" alt="AI Image Gen Logo"/>
   <br><br>
-  <a href="https://github.com/xcasper/ai-imager"><img src="https://img.shields.io/badge/GitHub-ai--imager-181717?logo=github&style=flat-square" alt="GitHub"/></a>
+  <a href="https://github.com/Casper-Tech-ke/ai-image-gen"><img src="https://img.shields.io/badge/GitHub-ai--image--gen-181717?logo=github&style=flat-square" alt="GitHub"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPLv3-yellow?style=flat-square" alt="License"/></a>
   <a href="https://apis.xcasper.space"><img src="https://img.shields.io/badge/Powered_by-Casper_Tech_APIs-7c3aed?style=flat-square" alt="Casper Tech APIs"/></a>
   <a href="https://xcasper.space"><img src="https://img.shields.io/badge/Homepage-xcasper.space-06b6d4?style=flat-square" alt="Homepage"/></a>
@@ -18,12 +18,40 @@
 
 ---
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/Casper-Tech-ke/ai-image-gen/raw/main/assets/screenshots/homepage.jpg" alt="Homepage" width="420"/>
+      <br/><sub><b>Homepage — Tool Gallery</b></sub>
+    </td>
+    <td align="center">
+      <img src="https://github.com/Casper-Tech-ke/ai-image-gen/raw/main/assets/screenshots/text_to_image.jpg" alt="Text to Image" width="420"/>
+      <br/><sub><b>Text to Image</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/Casper-Tech-ke/ai-image-gen/raw/main/assets/screenshots/image_to_prompt.jpg" alt="Image to Prompt" width="420"/>
+      <br/><sub><b>Image to Prompt</b></sub>
+    </td>
+    <td align="center">
+      <img src="https://github.com/Casper-Tech-ke/ai-image-gen/raw/main/assets/screenshots/api_docs.jpg" alt="API Docs" width="420"/>
+      <br/><sub><b>Interactive API Docs</b></sub>
+    </td>
+  </tr>
+</table>
+
+---
+
 ## Features
 
 - **Text to Image** — Generate images from any text prompt using the DeepAI engine
 - **Magic Studio** — High-quality image generation via Casper Tech APIs
 - **Image + Mask** — Edit specific regions of an image using a text prompt and mask
 - **Image Variations** — Generate creative variations from a reference image
+- **Image to Prompt** — Upload any image; AI extracts its colours, lighting & composition to craft a generation prompt
 - **Generation History** — Session-based history of all generated images
 - **API Reference** — Built-in interactive documentation at `/docs`
 - **Branded JSON Viewer** — Visit any API endpoint in a browser for a pretty-printed response
@@ -42,8 +70,8 @@
 ### Run Locally
 
 ```bash
-git clone https://github.com/xcasper/ai-imager.git
-cd ai-imager
+git clone https://github.com/Casper-Tech-ke/ai-image-gen.git
+cd ai-image-gen
 pip install -r requirements.txt
 python run.py
 ```
@@ -85,28 +113,6 @@ The `run.py` already reads `PORT` from the environment, so no changes are needed
 
 ---
 
-### Vercel
-
-Create a `vercel.json` at the project root:
-
-```json
-{
-  "builds": [{ "src": "run.py", "use": "@vercel/python" }],
-  "routes": [{ "src": "/(.*)", "dest": "run.py" }]
-}
-```
-
-Then deploy:
-
-```bash
-npm i -g vercel
-vercel --prod
-```
-
-> **Note:** Vercel's Python runtime is serverless. For file uploads and persistent sessions, use Render or Koyeb.
-
----
-
 ### Koyeb *(Free Tier — No Cold Starts)*
 
 1. Go to [app.koyeb.com](https://app.koyeb.com) → **Create App** → **GitHub**.
@@ -122,7 +128,7 @@ vercel --prod
 ### Railway
 
 1. Go to [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub Repo**.
-2. Select your fork — Railway auto-detects Python.
+2. Select your repo — Railway auto-detects Python.
 3. Add environment variable `PORT=5000` if required.
 4. Click **Deploy**.
 
@@ -135,15 +141,15 @@ vercel --prod
 sudo apt update && sudo apt install python3 python3-pip git nginx -y
 
 # Clone and install
-git clone https://github.com/xcasper/ai-imager.git
-cd ai-imager
+git clone https://github.com/Casper-Tech-ke/ai-image-gen.git
+cd ai-image-gen
 pip3 install -r requirements.txt gunicorn
 
 # Run with Gunicorn
 gunicorn -w 4 -b 0.0.0.0:5000 run:app
 ```
 
-**Nginx reverse proxy** (`/etc/nginx/sites-available/ai-imager`):
+**Nginx reverse proxy** (`/etc/nginx/sites-available/ai-image-gen`):
 
 ```nginx
 server {
@@ -160,33 +166,11 @@ server {
 ```
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/ai-imager /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/ai-image-gen /etc/nginx/sites-enabled/
 sudo systemctl restart nginx
 
 # HTTPS via Let's Encrypt
 sudo certbot --nginx -d your-domain.com
-```
-
-**Systemd service** (`/etc/systemd/system/ai-imager.service`):
-
-```ini
-[Unit]
-Description=AI Imager
-After=network.target
-
-[Service]
-User=ubuntu
-WorkingDirectory=/home/ubuntu/ai-imager
-ExecStart=/usr/local/bin/gunicorn -w 4 -b 0.0.0.0:5000 run:app
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable --now ai-imager
 ```
 
 ---
@@ -201,6 +185,8 @@ Visit `/docs` in the browser for the full interactive API reference.
 | `POST` | `/v1/image/bing/generate` | Magic Studio |
 | `POST` | `/v1/image/mask/generate` | Image + mask edit |
 | `POST` | `/v1/image/variation/generate` | Image variation |
+| `GET`  | `/v1/image/analyze` | Image-to-Prompt form |
+| `POST` | `/v1/image/analyze/generate` | Analyse image → returns `{prompt, palette}` |
 | `GET`  | `/v1/history` | Session history |
 
 All endpoints accept `multipart/form-data` and return JSON. No authentication required.
@@ -214,14 +200,6 @@ For security issues, see [SECURITY.md](SECURITY.md).
 
 ---
 
-## Legal
-
-- [Terms of Service](/terms)
-- [Privacy Policy](/privacy)
-- [Disclaimer](/disclaimer)
-
----
-
 ## License
 
 [GNU General Public License v3.0](LICENSE) — Free to use, modify, and distribute.
@@ -231,11 +209,9 @@ For security issues, see [SECURITY.md](SECURITY.md).
 ## Acknowledgements
 
 - [Casper Technology](https://xcasper.space) — Free AI APIs via [apis.xcasper.space](https://apis.xcasper.space)
-- [LawrenceKimutai](https://github.com/LawrenceKimutai) — Early contributions
-- [Simatwa](https://github.com/Simatwa) — Original project foundation
 
 ---
 
 <p align="center">
-  <a href="https://xcasper.space">xcasper.space</a> · <a href="https://apis.xcasper.space">Free AI APIs</a> · <a href="https://github.com/xcasper/ai-imager">GitHub</a>
+  <a href="https://xcasper.space">xcasper.space</a> · <a href="https://apis.xcasper.space">Free AI APIs</a> · <a href="https://github.com/Casper-Tech-ke/ai-image-gen">GitHub</a>
 </p>
