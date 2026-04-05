@@ -1,0 +1,496 @@
+{% extends "base.html" %}
+{% block title %}API Reference — AI Imager{% endblock %}
+
+{% block body %}
+<div class="docs-layout">
+
+  <!-- Sidebar -->
+  <aside class="docs-sidebar">
+    <div class="docs-sidebar-inner">
+      <p class="sidebar-section-label">Overview</p>
+      <a href="#intro" class="sidebar-link active">Introduction</a>
+      <a href="#base-url" class="sidebar-link">Base URL</a>
+      <a href="#response-format" class="sidebar-link">Response Format</a>
+
+      <p class="sidebar-section-label">Endpoints</p>
+      <a href="#ep-prompt" class="sidebar-link">POST Text to Image</a>
+      <a href="#ep-magic" class="sidebar-link">POST Magic Studio</a>
+      <a href="#ep-mask" class="sidebar-link">POST Image + Mask</a>
+      <a href="#ep-variation" class="sidebar-link">POST Variation</a>
+      <a href="#ep-history" class="sidebar-link">GET History</a>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <div class="docs-content">
+
+    <!-- Intro -->
+    <section id="intro" class="docs-section">
+      <div class="docs-page-header">
+        <a href="/" class="back-link">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M12 7H2M6 3L2 7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back to app
+        </a>
+        <div class="api-version-badge">v1</div>
+        <h1>API Reference</h1>
+        <p class="docs-lead">AI Imager exposes a simple REST API for generating and manipulating images. All endpoints accept <code>multipart/form-data</code> POST requests and return JSON. No authentication required.</p>
+      </div>
+    </section>
+
+    <!-- Base URL -->
+    <section id="base-url" class="docs-section">
+      <h2>Base URL</h2>
+      <div class="code-block">
+        <div class="code-label">Base URL</div>
+        <pre><code>{{ base_url }}</code></pre>
+      </div>
+          </section>
+
+    <!-- Response Format -->
+    <section id="response-format" class="docs-section">
+      <h2>Response Format</h2>
+      <p>All API endpoints return a JSON object with the following shape:</p>
+      <div class="code-block">
+        <div class="code-label">JSON</div>
+        <pre><code>{
+  <span class="json-key">"url"</span>: [<span class="json-string">"https://..."</span>, <span class="json-string">"https://..."</span>],  <span class="json-comment">// array of image URLs, or null on error</span>
+  <span class="json-key">"error"</span>: <span class="json-null">null</span>                                   <span class="json-comment">// error message string, or null on success</span>
+}</code></pre>
+      </div>
+
+      <div class="docs-table-wrap">
+        <table class="docs-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>url</code></td><td><span class="type-badge">array&lt;string&gt; | null</span></td><td>List of generated image URLs. <code>null</code> when an error occurred.</td></tr>
+            <tr><td><code>error</code></td><td><span class="type-badge">string | null</span></td><td>Human-readable error message. <code>null</code> on success.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="status-grid">
+        <div class="status-card">
+          <span class="http-badge http-200">200</span>
+          <span>Success — images generated</span>
+        </div>
+        <div class="status-card">
+          <span class="http-badge http-400">400</span>
+          <span>Bad request — missing required fields</span>
+        </div>
+        <div class="status-card">
+          <span class="http-badge http-501">501</span>
+          <span>Generation failed — upstream error</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── POST /v1/image/prompt/generate ── -->
+    <section id="ep-prompt" class="docs-section">
+      <div class="endpoint-header">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-url">/v1/image/prompt/generate</span>
+      </div>
+      <h2>Text to Image</h2>
+      <p>Generate one or more images from a text description using the DeepAI engine.</p>
+
+      <h3>Request Body <span class="form-note">multipart/form-data</span></h3>
+      <div class="docs-table-wrap">
+        <table class="docs-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>prompt</code></td>
+              <td><span class="type-badge">string</span></td>
+              <td><span class="required-badge">Required</span></td>
+              <td>Text description of the image to generate.</td>
+            </tr>
+            <tr>
+              <td><code>total_images</code></td>
+              <td><span class="type-badge">integer</span></td>
+              <td><span class="required-badge">Required</span></td>
+              <td>Number of images to generate (1–4 recommended).</td>
+            </tr>
+            <tr>
+              <td><code>image_size</code></td>
+              <td><span class="type-badge">string</span></td>
+              <td><span class="required-badge">Required</span></td>
+              <td>Desired resolution. One of <code>256x256</code>, <code>512x512</code>, <code>1024x1024</code>. (Passed through; actual size depends on provider.)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tabs" data-tab-group="prompt">
+        <button class="tab-btn active" onclick="switchTab('prompt','curl')">cURL</button>
+        <button class="tab-btn" onclick="switchTab('prompt','python')">Python</button>
+        <button class="tab-btn" onclick="switchTab('prompt','js')">JavaScript</button>
+      </div>
+
+      <div id="prompt-curl" class="code-block tab-panel">
+        <div class="code-label">cURL</div>
+        <pre><code>curl -X POST {{ base_url }}/v1/image/prompt/generate \
+  -F "prompt=A futuristic city skyline at night with neon reflections" \
+  -F "total_images=2" \
+  -F "image_size=512x512"</code></pre>
+      </div>
+
+      <div id="prompt-python" class="code-block tab-panel hidden">
+        <div class="code-label">Python</div>
+        <pre><code>import requests
+
+resp = requests.post(
+    "{{ base_url }}/v1/image/prompt/generate",
+    data={
+        "prompt": "A futuristic city skyline at night with neon reflections",
+        "total_images": 2,
+        "image_size": "512x512",
+    }
+)
+data = resp.json()
+print(data["url"])  # ['https://...', 'https://...']</code></pre>
+      </div>
+
+      <div id="prompt-js" class="code-block tab-panel hidden">
+        <div class="code-label">JavaScript</div>
+        <pre><code>const form = new FormData();
+form.append("prompt", "A futuristic city skyline at night with neon reflections");
+form.append("total_images", "2");
+form.append("image_size", "512x512");
+
+const res = await fetch("/v1/image/prompt/generate", { method: "POST", body: form });
+const { url, error } = await res.json();
+if (error) console.error(error);
+else url.forEach(src => console.log(src));</code></pre>
+      </div>
+
+      <h3>Example Response</h3>
+      <div class="code-block">
+        <div class="code-label">JSON · 200 OK</div>
+        <pre><code>{
+  <span class="json-key">"url"</span>: [
+    <span class="json-string">"https://api.deepai.org/job-view-file/abc123/outputs/output.jpg"</span>,
+    <span class="json-string">"https://api.deepai.org/job-view-file/def456/outputs/output.jpg"</span>
+  ],
+  <span class="json-key">"error"</span>: <span class="json-null">null</span>
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ── POST /v1/image/bing/generate ── -->
+    <section id="ep-magic" class="docs-section">
+      <div class="endpoint-header">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-url">/v1/image/bing/generate</span>
+      </div>
+      <h2>Magic Studio</h2>
+      <p>Generate images using the Magic Studio engine (Casper Tech APIs). Falls back to DeepAI if Magic Studio is unavailable.</p>
+
+      <h3>Request Body <span class="form-note">multipart/form-data</span></h3>
+      <div class="docs-table-wrap">
+        <table class="docs-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>prompt</code></td><td><span class="type-badge">string</span></td><td><span class="required-badge">Required</span></td><td>Text description of the image to generate.</td></tr>
+            <tr><td><code>total_images</code></td><td><span class="type-badge">integer</span></td><td><span class="required-badge">Required</span></td><td>Number of images to generate.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tabs" data-tab-group="magic">
+        <button class="tab-btn active" onclick="switchTab('magic','curl')">cURL</button>
+        <button class="tab-btn" onclick="switchTab('magic','python')">Python</button>
+        <button class="tab-btn" onclick="switchTab('magic','js')">JavaScript</button>
+      </div>
+
+      <div id="magic-curl" class="code-block tab-panel">
+        <div class="code-label">cURL</div>
+        <pre><code>curl -X POST {{ base_url }}/v1/image/bing/generate \
+  -F "prompt=A magical forest at golden hour with fairy lights" \
+  -F "total_images=2"</code></pre>
+      </div>
+      <div id="magic-python" class="code-block tab-panel hidden">
+        <div class="code-label">Python</div>
+        <pre><code>import requests
+
+resp = requests.post(
+    "{{ base_url }}/v1/image/bing/generate",
+    data={
+        "prompt": "A magical forest at golden hour with fairy lights",
+        "total_images": 2,
+    }
+)
+print(resp.json()["url"])</code></pre>
+      </div>
+      <div id="magic-js" class="code-block tab-panel hidden">
+        <div class="code-label">JavaScript</div>
+        <pre><code>const form = new FormData();
+form.append("prompt", "A magical forest at golden hour with fairy lights");
+form.append("total_images", "2");
+
+const res = await fetch("/v1/image/bing/generate", { method: "POST", body: form });
+const { url, error } = await res.json();</code></pre>
+      </div>
+
+      <h3>Example Response</h3>
+      <div class="code-block">
+        <div class="code-label">JSON · 200 OK</div>
+        <pre><code>{
+  <span class="json-key">"url"</span>: [
+    <span class="json-string">"https://cdn.magicstudio.com/output/image-abc.jpg"</span>
+  ],
+  <span class="json-key">"error"</span>: <span class="json-null">null</span>
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ── POST /v1/image/mask/generate ── -->
+    <section id="ep-mask" class="docs-section">
+      <div class="endpoint-header">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-url">/v1/image/mask/generate</span>
+      </div>
+      <h2>Image + Mask</h2>
+      <p>Upload an original image and a mask image, then describe the desired edit. The AI generates new images matching the prompt.</p>
+
+      <h3>Request Body <span class="form-note">multipart/form-data</span></h3>
+      <div class="docs-table-wrap">
+        <table class="docs-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>original_image_path</code></td><td><span class="type-badge">file</span></td><td><span class="required-badge">Required</span></td><td>The base image to edit (PNG, JPG, WEBP).</td></tr>
+            <tr><td><code>masked_image_path</code></td><td><span class="type-badge">file</span></td><td><span class="required-badge">Required</span></td><td>Mask image defining the edit region.</td></tr>
+            <tr><td><code>prompt</code></td><td><span class="type-badge">string</span></td><td><span class="required-badge">Required</span></td><td>Description of the desired edit.</td></tr>
+            <tr><td><code>total_images</code></td><td><span class="type-badge">integer</span></td><td><span class="required-badge">Required</span></td><td>Number of images to generate.</td></tr>
+            <tr><td><code>image_size</code></td><td><span class="type-badge">string</span></td><td><span class="required-badge">Required</span></td><td><code>256x256</code>, <code>512x512</code>, or <code>1024x1024</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tabs" data-tab-group="mask">
+        <button class="tab-btn active" onclick="switchTab('mask','curl')">cURL</button>
+        <button class="tab-btn" onclick="switchTab('mask','python')">Python</button>
+        <button class="tab-btn" onclick="switchTab('mask','js')">JavaScript</button>
+      </div>
+
+      <div id="mask-curl" class="code-block tab-panel">
+        <div class="code-label">cURL</div>
+        <pre><code>curl -X POST {{ base_url }}/v1/image/mask/generate \
+  -F "original_image_path=@/path/to/original.png" \
+  -F "masked_image_path=@/path/to/mask.png" \
+  -F "prompt=A sunlit indoor lounge with a flamingo pool" \
+  -F "total_images=1" \
+  -F "image_size=512x512"</code></pre>
+      </div>
+      <div id="mask-python" class="code-block tab-panel hidden">
+        <div class="code-label">Python</div>
+        <pre><code>import requests
+
+with open("original.png", "rb") as orig, open("mask.png", "rb") as mask:
+    resp = requests.post(
+        "{{ base_url }}/v1/image/mask/generate",
+        files={
+            "original_image_path": orig,
+            "masked_image_path": mask,
+        },
+        data={
+            "prompt": "A sunlit indoor lounge with a flamingo pool",
+            "total_images": 1,
+            "image_size": "512x512",
+        }
+    )
+print(resp.json()["url"])</code></pre>
+      </div>
+      <div id="mask-js" class="code-block tab-panel hidden">
+        <div class="code-label">JavaScript</div>
+        <pre><code>const form = new FormData();
+form.append("original_image_path", originalFile);  // File object
+form.append("masked_image_path", maskFile);         // File object
+form.append("prompt", "A sunlit indoor lounge with a flamingo pool");
+form.append("total_images", "1");
+form.append("image_size", "512x512");
+
+const res = await fetch("/v1/image/mask/generate", { method: "POST", body: form });
+const { url, error } = await res.json();</code></pre>
+      </div>
+
+      <h3>Example Response</h3>
+      <div class="code-block">
+        <div class="code-label">JSON · 200 OK</div>
+        <pre><code>{
+  <span class="json-key">"url"</span>: [
+    <span class="json-string">"https://api.deepai.org/job-view-file/xyz789/outputs/output.jpg"</span>
+  ],
+  <span class="json-key">"error"</span>: <span class="json-null">null</span>
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ── POST /v1/image/variation/generate ── -->
+    <section id="ep-variation" class="docs-section">
+      <div class="endpoint-header">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-url">/v1/image/variation/generate</span>
+      </div>
+      <h2>Image Variation</h2>
+      <p>Upload a reference image and receive AI-generated variations inspired by its composition and style.</p>
+
+      <h3>Request Body <span class="form-note">multipart/form-data</span></h3>
+      <div class="docs-table-wrap">
+        <table class="docs-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>path_to_image</code></td><td><span class="type-badge">file</span></td><td><span class="required-badge">Required</span></td><td>Reference image to generate variations from (PNG, JPG, WEBP).</td></tr>
+            <tr><td><code>total_images</code></td><td><span class="type-badge">integer</span></td><td><span class="required-badge">Required</span></td><td>Number of variations to generate.</td></tr>
+            <tr><td><code>image_size</code></td><td><span class="type-badge">string</span></td><td><span class="required-badge">Required</span></td><td><code>256x256</code>, <code>512x512</code>, or <code>1024x1024</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tabs" data-tab-group="variation">
+        <button class="tab-btn active" onclick="switchTab('variation','curl')">cURL</button>
+        <button class="tab-btn" onclick="switchTab('variation','python')">Python</button>
+        <button class="tab-btn" onclick="switchTab('variation','js')">JavaScript</button>
+      </div>
+
+      <div id="variation-curl" class="code-block tab-panel">
+        <div class="code-label">cURL</div>
+        <pre><code>curl -X POST {{ base_url }}/v1/image/variation/generate \
+  -F "path_to_image=@/path/to/reference.png" \
+  -F "total_images=2" \
+  -F "image_size=512x512"</code></pre>
+      </div>
+      <div id="variation-python" class="code-block tab-panel hidden">
+        <div class="code-label">Python</div>
+        <pre><code>import requests
+
+with open("reference.png", "rb") as img:
+    resp = requests.post(
+        "{{ base_url }}/v1/image/variation/generate",
+        files={"path_to_image": img},
+        data={"total_images": 2, "image_size": "512x512"}
+    )
+print(resp.json()["url"])</code></pre>
+      </div>
+      <div id="variation-js" class="code-block tab-panel hidden">
+        <div class="code-label">JavaScript</div>
+        <pre><code>const form = new FormData();
+form.append("path_to_image", referenceFile);  // File object
+form.append("total_images", "2");
+form.append("image_size", "512x512");
+
+const res = await fetch("/v1/image/variation/generate", { method: "POST", body: form });
+const { url, error } = await res.json();</code></pre>
+      </div>
+
+      <h3>Example Response</h3>
+      <div class="code-block">
+        <div class="code-label">JSON · 200 OK</div>
+        <pre><code>{
+  <span class="json-key">"url"</span>: [
+    <span class="json-string">"https://api.deepai.org/job-view-file/aaa111/outputs/output.jpg"</span>,
+    <span class="json-string">"https://api.deepai.org/job-view-file/bbb222/outputs/output.jpg"</span>
+  ],
+  <span class="json-key">"error"</span>: <span class="json-null">null</span>
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ── GET /v1/history ── -->
+    <section id="ep-history" class="docs-section">
+      <div class="endpoint-header">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-url">/v1/history</span>
+      </div>
+      <h2>Image History</h2>
+      <p>Returns the generation history for the current session (identified by a session cookie set automatically on first visit).</p>
+
+      <h3>Query Parameters</h3>
+      <div class="docs-table-wrap">
+        <table class="docs-table">
+          <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>limit</code></td><td><span class="type-badge">integer</span></td><td><span class="optional-badge">Optional</span></td><td>Maximum number of records to return. Default: 1000.</td></tr>
+            <tr><td><code>target</code></td><td><span class="type-badge">string</span></td><td><span class="optional-badge">Optional</span></td><td>Specific field to extract: <code>category</code>, <code>prompt</code>, <code>time</code>, or <code>urls</code>.</td></tr>
+            <tr><td><code>category</code></td><td><span class="type-badge">string</span></td><td><span class="optional-badge">Optional</span></td><td>Filter by category: <code>chatgpt</code>, <code>bing</code>, <code>masking</code>, or <code>variation</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tabs" data-tab-group="history">
+        <button class="tab-btn active" onclick="switchTab('history','curl')">cURL</button>
+        <button class="tab-btn" onclick="switchTab('history','python')">Python</button>
+        <button class="tab-btn" onclick="switchTab('history','js')">JavaScript</button>
+      </div>
+
+      <div id="history-curl" class="code-block tab-panel">
+        <div class="code-label">cURL</div>
+        <pre><code># Get all history
+curl "{{ base_url }}/v1/history"
+
+# Get last 5 bing prompts
+curl "{{ base_url }}/v1/history?category=bing&amp;limit=5"
+
+# Get only image URLs
+curl "{{ base_url }}/v1/history?target=urls"</code></pre>
+      </div>
+      <div id="history-python" class="code-block tab-panel hidden">
+        <div class="code-label">Python</div>
+        <pre><code>import requests
+
+# Full history
+resp = requests.get("{{ base_url }}/v1/history")
+print(resp.json())
+
+# Filter by category and limit
+resp = requests.get(
+    "{{ base_url }}/v1/history",
+    params={"category": "bing", "limit": 5}
+)
+print(resp.json())</code></pre>
+      </div>
+      <div id="history-js" class="code-block tab-panel hidden">
+        <div class="code-label">JavaScript</div>
+        <pre><code>// Full history
+const res = await fetch("/v1/history");
+const data = await res.json();
+console.log(data.data);
+
+// Filter
+const filtered = await fetch("/v1/history?category=chatgpt&limit=10");
+console.log(await filtered.json());</code></pre>
+      </div>
+
+      <h3>Example Response</h3>
+      <div class="code-block">
+        <div class="code-label">JSON · 200 OK</div>
+        <pre><code>{
+  <span class="json-key">"data"</span>: [
+    {
+      <span class="json-key">"category"</span>: <span class="json-string">"chatgpt"</span>,
+      <span class="json-key">"prompt"</span>: <span class="json-string">"A futuristic city at night"</span>,
+      <span class="json-key">"time"</span>: <span class="json-string">"2026-04-05T21:57:11"</span>,
+      <span class="json-key">"urls"</span>: [
+        <span class="json-string">"https://api.deepai.org/job-view-file/abc/outputs/output.jpg"</span>
+      ]
+    }
+  ]
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- Error reference -->
+    <section class="docs-section">
+      <h2>Error Response</h2>
+      <p>When a request fails, <code>url</code> is <code>null</code> and <code>error</code> contains the reason:</p>
+      <div class="code-block">
+        <div class="code-label">JSON · 400 / 501</div>
+        <pre><code>{
+  <span class="json-key">"url"</span>: <span class="json-null">null</span>,
+  <span class="json-key">"error"</span>: <span class="json-string">"Kindly fill all the fields"</span>
+}</code></pre>
+      </div>
+    </section>
+
+  </div><!-- /docs-content -->
+</div><!-- /docs-layout -->
+{% endblock %}
