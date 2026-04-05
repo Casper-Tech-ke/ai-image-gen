@@ -1,4 +1,11 @@
 {% extends "base.html" %}
+{% block title %}{% if category == "prompt" %}Text to Image{% elif category == "bing" %}Magic Studio{% elif category == "mask" %}Image + Mask{% else %}Image Variations{% endif %} — AI Image Gen{% endblock %}
+{% block description %}{% if category == "prompt" %}Describe any scene or style and AI will generate it instantly. No API key required.{% elif category == "bing" %}High-quality AI image generation with a distinct artistic style. No API key required.{% elif category == "mask" %}Upload an image and mask, describe your edit, and AI fills it in intelligently. Free.{% else %}Upload a reference image and AI generates inspired creative variations. Free, no key.{% endif %}{% endblock %}
+{% block og_title %}{% if category == "prompt" %}Text to Image{% elif category == "bing" %}Magic Studio{% elif category == "mask" %}Image + Mask{% else %}Image Variations{% endif %} — AI Image Gen{% endblock %}
+{% block og_description %}{% if category == "prompt" %}Turn any text prompt into a stunning image instantly — free, no API key.{% elif category == "bing" %}Generate beautiful AI art with Magic Studio — free, no account needed.{% elif category == "mask" %}Edit any part of an image with AI — upload, mask, describe. Free.{% else %}Create creative AI variations of any image — free, no API key.{% endif %}{% endblock %}
+{% block twitter_title %}{% if category == "prompt" %}Text to Image{% elif category == "bing" %}Magic Studio{% elif category == "mask" %}Image + Mask{% else %}Image Variations{% endif %} — AI Image Gen{% endblock %}
+{% block twitter_description %}{% if category == "prompt" %}Turn any text prompt into a stunning image instantly — free, no API key.{% elif category == "bing" %}Generate beautiful AI art with Magic Studio — free, no account needed.{% elif category == "mask" %}Edit any part of an image with AI — upload, mask, describe. Free.{% else %}Create creative AI variations of any image — free, no API key.{% endif %}{% endblock %}
+{% block keywords %}{% if category == "prompt" %}text to image, AI image generator{% elif category == "bing" %}magic studio, AI art generator{% elif category == "mask" %}image editing, AI inpainting{% else %}image variations, AI art{% endif %}, free AI, no API key, Casper Tech{% endblock %}
 
 {% if category == "prompt" %}
   {% set page_title = "Text to Image" %}
@@ -17,8 +24,6 @@
   {% set page_desc  = "Upload a reference image and generate inspired variations." %}
   {% set emoji      = "⊞" %}
 {% endif %}
-
-{% block title %}{{ page_title }} — AI Imager{% endblock %}
 
 {% block body %}
 <div class="form-page">
