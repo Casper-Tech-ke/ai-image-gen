@@ -1,0 +1,26 @@
+{
+  "name": "AI Image Gen",
+  "short_name": "AI Image Gen",
+  "description": "Generate stunning images with AI — no API key required. Powered by Casper Tech APIs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f13",
+  "theme_color": "#7c3aed",
+  "icons": [
+    {
+      "src": "/static/image/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/image/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/image/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
