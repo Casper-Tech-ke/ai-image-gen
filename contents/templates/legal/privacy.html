@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy — AI Imager{% endblock %}
+{% block body %}
+<div class="legal-page">
+  <div class="legal-header">
+    <div class="legal-badge">Legal</div>
+    <h1>Privacy Policy</h1>
+    <p class="legal-meta">Effective date: April 5, 2026 &nbsp;·&nbsp; Last updated: April 5, 2026</p>
+  </div>
+
+  <div class="legal-body">
+    <section>
+      <h2>1. Overview</h2>
+      <p>AI Imager is committed to being transparent about how your data is handled. This Privacy Policy describes what information we collect, how it is used, and your rights regarding that information.</p>
+    </section>
+
+    <section>
+      <h2>2. Information We Collect</h2>
+      <h3>Session Data</h3>
+      <p>AI Imager assigns each user a session cookie (<code>id</code>) to store generation history locally on the server. This cookie expires after 72 hours and contains no personally identifiable information.</p>
+      <h3>Image Generation Requests</h3>
+      <p>When you generate images, your text prompt and the resulting image URLs are stored in your session history. This data is stored per-session and is not shared with third parties beyond what is necessary to call the underlying AI APIs.</p>
+      <h3>Uploaded Images</h3>
+      <p>Images you upload (for masking or variation) are stored temporarily on the server during processing and may be deleted after the session ends.</p>
+    </section>
+
+    <section>
+      <h2>3. How We Use Your Data</h2>
+      <ul>
+        <li>To process your image generation requests.</li>
+        <li>To display your generation history within your current session.</li>
+        <li>To maintain service functionality.</li>
+      </ul>
+      <p>We do not sell, rent, or share your data with advertisers or third parties for marketing purposes.</p>
+    </section>
+
+    <section>
+      <h2>4. Third-Party Services</h2>
+      <p>AI Imager uses the following third-party services to function:</p>
+      <ul>
+        <li><strong>Casper Technology APIs</strong> (<a href="https://apis.xcasper.space" target="_blank">apis.xcasper.space</a>) — Image generation backend. Your prompts and uploaded images are sent to these APIs for processing. Please review their privacy practices.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>5. Cookies</h2>
+      <p>We use a single session cookie (<code>id</code>) to identify your session for history tracking. This cookie does not track you across sites and contains no personal information. You may disable cookies in your browser settings, though this will prevent history from working.</p>
+    </section>
+
+    <section>
+      <h2>6. Data Retention</h2>
+      <p>Session history is stored for 72 hours from your last visit. Uploaded images are stored only for the duration of the request. We do not maintain long-term databases of user activity.</p>
+    </section>
+
+    <section>
+      <h2>7. Children's Privacy</h2>
+      <p>AI Imager is not intended for use by individuals under the age of 13. We do not knowingly collect any personal information from children.</p>
+    </section>
+
+    <section>
+      <h2>8. Changes to This Policy</h2>
+      <p>We may update this Privacy Policy from time to time. The "last updated" date at the top of this page will reflect any changes.</p>
+    </section>
+
+    <section>
+      <h2>9. Contact</h2>
+      <p>For privacy-related inquiries, please open an issue on our <a href="https://github.com/xcasper/ai-imager" target="_blank">GitHub repository</a>.</p>
+    </section>
+  </div>
+
+  <div class="legal-footer-nav">
+    <a href="/terms">Terms of Service →</a>
+    <a href="/disclaimer">Disclaimer →</a>
+    <a href="/">Back to App</a>
+  </div>
+</div>
+{% endblock %}
