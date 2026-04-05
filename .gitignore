@@ -1,0 +1,11 @@
+*.vscode
+*__pycache__
+*dist
+*build
+*refs.md
+*test
+*ai_imager.egg-info
+*key.txt
+*uploads
+*configs
+*bing.json
