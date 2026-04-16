@@ -23,7 +23,7 @@ class local_config:
     def get_path(self, *args):
         return path.join(app_data_dir, "/".join(args))
 
-    def get_arg(self, *keys, default: Any = None, resp: dict = {}) -> dict:
+    def get_arg(self, *keys, default: Any = None, resp: dict = None) -> dict:
         """Extracts parameter's value from GET request
 
         Args:
@@ -33,11 +33,13 @@ class local_config:
         Returns:
             dict: Parameter:Value
         """
+        if resp is None:
+            resp = {}
         for arg in keys:
             resp[arg] = request.args.get(arg, default)
         return resp
 
-    def get_from_form(self, *keys, resp: dict = {}) -> dict:
+    def get_from_form(self, *keys, resp: dict = None) -> dict:
         """Exracts data from POST requests
 
         Args:
@@ -46,6 +48,8 @@ class local_config:
         Returns:
             dict: Form data - key,value
         """
+        if resp is None:
+            resp = {}
         for key in keys:
             resp[key] = request.form.get(key)
         return resp
@@ -97,7 +101,7 @@ class local_config:
             resp["data"] = resp["data"][:limit]
         return resp
 
-    def get_from_file(self, *keys, resp: dict = {}):
+    def get_from_file(self, *keys, resp: dict = None):
         """Retrieve files from form
 
         Args:
@@ -108,6 +112,8 @@ class local_config:
         Returns:
             dict: name and filepath
         """
+        if resp is None:
+            resp = {}
         for key in keys:
             file = request.files.get(key)
             if file:
@@ -165,7 +171,7 @@ class local_config:
         def decorator(func):
             def main(*args, **kwargs):
                 try:
-                    return func(*args, **args)
+                    return func(*args, **kwargs)
                 except Exception as e:
                     return jsonify({"error": self.format_response(getExc(e))})
 
